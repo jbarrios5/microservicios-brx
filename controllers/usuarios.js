@@ -28,13 +28,24 @@ const createUser = async(req, res = response) => {
     const { nombre, correo, password, rol } = req.body;
     const usuario = new Usuario({ nombre, correo, password, rol });
 
-  
+  try {
     // Guardar en BD
     await usuario.save();
 
     res.json({
         usuario
     });
+  } catch (error) {
+        console.log(error.message);
+        let msg = error.message
+        if(error.code === 11000){
+            msg = `Ya existe esos datos por favor cambiar`    
+        }
+    return res.json({
+        msg
+    })
+  }
+    
 }
 
 const usuariosPut = async(req, res = response) => {
