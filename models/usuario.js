@@ -6,6 +6,19 @@ const UsuarioSchema = Schema({
         type: String,
         required: [true, 'El nombre es obligatorio']
     },
+    apellido: {
+        type: String,
+        required: [true, 'El apellido es obligatorio']
+    },
+    documento: {
+        type: String,
+        required: [true, 'El documento es obligatorio']
+    },
+    nacionalidad:{
+        type:String,
+        default:'Paraguaya'
+    },
+    
     correo: {
         type: String,
         required: [true, 'El correo es obligatorio'],
@@ -14,6 +27,10 @@ const UsuarioSchema = Schema({
     password: {
         type: String,
         required: [true, 'La contraseña es obligatoria'],
+    },
+    telefono: {
+        type: String,
+        
     },
    
     rol: {
