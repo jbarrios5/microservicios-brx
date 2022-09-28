@@ -2,54 +2,32 @@ const { response, request } = require('express');
 const bcryptjs = require('bcryptjs')
 
 
-const Usuario = require('../models/usuario');
+const User = require('../models/user');
 
-
-
-const usuariosGet = async(req = request, res = response) => {
-
-    const { limite = 5, desde = 0 } = req.query;
-    const query = { estado: true };
-
-    const [ total, usuarios ] = await Promise.all([
-        Usuario.countDocuments(query),
-        Usuario.find(query)
-            .skip( Number( desde ) )
-            .limit(Number( limite ))
-    ]);
-
-    res.json({
-        total,
-        usuarios
-    });
+const getUser = async(req,res)=>{
+    try {
+        const note = await User.findAll();
+        res.json(note);
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
 }
 
 const createUser = async(req, res = response) => {
-    const usuario = new Usuario(req.body);
+    const {password}  = req.body
 
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( usuario.password, salt );
+    req.body.password = bcryptjs.hashSync(password, salt );
 
-
-  try {
-    // Guardar en BD
-    await usuario.save();
-
-    res.json({
-        usuario
-    });
-  } catch (error) {
-        console.log(error.message);
-        let msg = error.message
-        if(error.code === 11000){
-            msg = `Ya existe esos datos por favor cambiar`    
-        }
-    return res.json({
-        msg
-    })
-  }
-    
+    console.log(req.body);
+    try {
+        
+        const newTask = await User.create(req.body);
+        res.json(newTask);
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }  
 }
 
 const usuariosPut = async(req, res = response) => {
@@ -87,7 +65,7 @@ const usuariosDelete = async(req, res = response) => {
 
 
 module.exports = {
-    usuariosGet,
+    getUser,
     createUser,
     usuariosPut,
     usuariosPatch,
