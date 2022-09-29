@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs')
 
 
 const User = require('../models/user');
+const { where } = require('sequelize');
 
 const getUser = async(req,res)=>{
     try {
@@ -28,6 +29,25 @@ const createUser = async(req, res = response) => {
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }  
+}
+
+const getUserByID = async (req,res)=>{
+    const {document:id_user} = req.params
+    
+
+    try {
+        if( !id_user ) return res.status(400).json({ msg: `Se requiere el id del usuario` });
+        const user = await User.findOne({where:{id_user}});
+
+        if( !user ) return res.status(400).json({ msg: `Usuario con id ${id_user} no existe` });
+        delete user.dataValues.password
+        res.json(user);
+
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
+    
+
 }
 
 const usuariosPut = async(req, res = response) => {
@@ -66,8 +86,6 @@ const usuariosDelete = async(req, res = response) => {
 
 module.exports = {
     getUser,
+    getUserByID,
     createUser,
-    usuariosPut,
-    usuariosPatch,
-    usuariosDelete,
 }
