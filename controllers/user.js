@@ -4,6 +4,7 @@ const bcryptjs = require('bcryptjs')
 
 const User = require('../models/user');
 const { where } = require('sequelize');
+const Auth = require('../models/auth');
 
 const getUser = async(req,res)=>{
     try {
@@ -33,9 +34,20 @@ const createUser = async(req, res = response) => {
 
 const getUserByID = async (req,res)=>{
     const {document:id_user} = req.params
-    
+    const {token} = req.headers
+
+
+
 
     try {
+        if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
+        
+        //verificamos si esta logueado
+        const tokenExist = await Auth.findOne({where:{token}});
+        if(!tokenExist)return res.status(400).json({ msg: `Token no valido - no existe` });
+        console.log(tokenExist.created);
+        if(tokenExist.created<new Date())  return res.status(400).json({ msg: `El token ha exiparado` }); 
+
         if( !id_user ) return res.status(400).json({ msg: `Se requiere el id del usuario` });
         const user = await User.findOne({where:{id_user}});
 

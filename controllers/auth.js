@@ -1,8 +1,10 @@
 const { response } = require('express');
 const bcryptjs = require('bcryptjs')
+const {v4:uuid} = require('uuid')
 
 
 const User = require('../models/user');
+const Auth = require('../models/auth');
 
 
 
@@ -37,11 +39,15 @@ const login = async(req, res = response) => {
         }
 
         // Generar el JWT
-        //const token = await generarJWT( usuario.id );
-        
+        const token = uuid()
+        console.log(token);
+        const auth  = await Auth.create({id_user:user.id_user,token:token,created:new Date()})
+        console.log(auth);
         delete user.dataValues.password
         res.json({
             user,
+            token
+
             
         })
 
