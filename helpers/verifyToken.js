@@ -1,6 +1,6 @@
 const Auth = require("../models/auth");
 
-const checkToken = async (token)=>{
+const checkToken = async (token,idUser = '')=>{
     const tokenExist = await Auth.findOne({where:{token}});
     if(!tokenExist)return false;
     console.log('Token existe verificamos si no ha expirado');
@@ -8,6 +8,8 @@ const checkToken = async (token)=>{
     const date = new Date();
     if(tokenExist.created !== (date.toISOString().split('T')[0]))  return false 
     console.log('EL token es valido');
+    console.log(tokenExist);
+    
     return true
 
 }
