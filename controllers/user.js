@@ -19,7 +19,7 @@ const createUser = async(req, res = response) => {
   const isToken = await checkToken(token)
   if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
  
- 
+   //verificamos si el usuario es adim 
  
   try {
     // Encriptar la contraseña
@@ -43,11 +43,30 @@ const getUser = async(req,res)=>{
     const isToken = await checkToken(token)
     if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
 
-        const note = await User.findAll({attributes: {exclude: ['password']}});
-        res.json(note);
+        const user = await User.findAll({attributes: {exclude: ['password']},where:{status:1}});
+        res.json(user);
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }
+}
+
+
+
+const getUserBlocked = async(req,res)=>{
+  const {token} = req.headers
+  try {
+
+  if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
+  
+  //verificamos el token si es valido o no ha expirado
+  const isToken = await checkToken(token)
+  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+
+      const user = await User.findAll({attributes: {exclude: ['password']},where:{status:0}});
+      res.json(user);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
 }
 
 const getUserByID = async (req,res)=>{
@@ -134,11 +153,41 @@ const updateUser = async(req,res) => {
 
 }
 
+const getUserByDocument = async(document = '',id_user = '')=>{
+  
+  console.log(`Obtenemos los datos docuemnte : ${document} y id_user ${id_user}`);
+    try {
+       if(document !== ''){
+
+         const user = await User.findOne({where:{document}});
+          console.log('Se obtuvo el usuario');
+        console.log(`Retornaremos los siguientes datos ${user.dataValues}`);        
+          return user
+       }else{
+        const user = await User.findOne({where:{id_user}});
+        return user
+
+       }
+        
+
+        
+
+      } catch (error) {
+        return 'Ocurrio un error'
+      }
+    
+
+
+}
+
+
 
 module.exports = {
     getUser,
     getUserByID,
     createUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getUserByDocument,
+    getUserBlocked
 }

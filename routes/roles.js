@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getRolesById } = require('../controllers/roles');
+const { getRolesById, getRoles, createRole, getRolesByUserId, addRoleToUser } = require('../controllers/roles');
 
 
 
@@ -8,7 +8,11 @@ const { getRolesById } = require('../controllers/roles');
 
 const router = Router();
 
-router.get('/:id',getRolesById);
+router.get('/:id',getRolesByUserId);
+router.get('/',getRoles);
+router.post('/',createRole)
+router.post('/user-role',addRoleToUser)
+
 
 
 
