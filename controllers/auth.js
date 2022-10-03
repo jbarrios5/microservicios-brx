@@ -22,7 +22,13 @@ const login = async(req, res = response) => {
                 msg: 'Usuario / Password no son correctos - correo'
             });
         }
-
+        // SI el usuario está activo
+        if ( user.status == 0  ) {
+            return res.status(400).json({
+                msg: 'Usuario inactivo',
+                errorCode: 1002
+            });
+        }
        
 
         // Verificar la contraseña
