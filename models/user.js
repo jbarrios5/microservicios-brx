@@ -28,6 +28,12 @@ const User = sequelize.define('users',{
     },
     phone:{
         type:DataTypes.STRING
+    },
+    register:{
+        type:DataTypes.DATE
+    },
+    update_data:{
+        type:DataTypes.DATE
     }
 
 
