@@ -108,7 +108,7 @@ const deleteUser = async(req,res)=>{
       const isToken = await checkToken(token)
       if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
       console.log('Intentaremos eliminar el usuario');
-      const user = await User.destroy({where:{id_user:id}})
+      const user = await User.update({status:2},{where:{id_user:id}})
       if( !user ) return res.status(400).json({ msg: `Usuario con id ${id_user} no existe` });
       
       

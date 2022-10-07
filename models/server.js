@@ -12,6 +12,7 @@ class Server {
             auth:       '/api/auth',
             usuarios:   '/api/user',
             roles:   '/api/roles',
+            client:   '/api/client',
 
         }
 
@@ -47,6 +48,7 @@ class Server {
         this.app.use( this.paths.auth, require('../routes/auth'));
         this.app.use( this.paths.usuarios, require('../routes/users'));
         this.app.use( this.paths.roles, require('../routes/roles'));
+        this.app.use( this.paths.client, require('../routes/clients'));
 
         
     }

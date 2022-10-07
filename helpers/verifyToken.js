@@ -8,7 +8,7 @@ const checkToken = async (token,idUser = '')=>{
     const date = new Date();
     if(tokenExist.created !== (date.toISOString().split('T')[0]))  return false 
     console.log('EL token es valido');
-    console.log(tokenExist);
+    console.log(tokenExist.dataValues);
     idUser  = tokenExist.dataValues.id_user
     
     return true
