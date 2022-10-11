@@ -4,6 +4,8 @@ const bcryptjs = require('bcryptjs')
 
 const User = require('../models/user');
 const { checkToken } = require('../helpers/verifyToken');
+const { GET_USER_WITH_ROL } = require('../helpers/querys');
+const sequelize = require('../database/db');
 
 
 const createUser = async(req, res = response) => {
@@ -42,9 +44,13 @@ const getUser = async(req,res)=>{
     //verificamos el token si es valido o no ha expirado
     const isToken = await checkToken(token)
     if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
-
-        const user = await User.findAll({attributes: {exclude: ['password']},where:{status:1}});
-        res.json(user);
+      console.log('Ejecutaremos este query');
+      console.log(GET_USER_WITH_ROL);
+    const [results,metadata] = await sequelize.query(
+      GET_USER_WITH_ROL)
+        results.map( us => delete us.password)
+        console.log(results);
+        res.json(results);
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }
@@ -113,7 +119,7 @@ const deleteUser = async(req,res)=>{
       
       
       
-      res.json({msg:'Usuario eliminado correctamente'});
+      res.json({msg:'Usuario eliminado correctamente',user});
 
     } catch (error) {
       return res.status(500).json({ message: error.message });
