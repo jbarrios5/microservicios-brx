@@ -9,8 +9,8 @@ const getAllClients = async(req,res)=>{
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
     
     //verificamos el token si es valido o no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+    await checkToken(token,req.session.user.id_user)
+    ;
 
         const clients = await  Client.findAll({where:{status:1}});
         res.json(clients);
@@ -28,8 +28,8 @@ const createClient = async(req, res = response) => {
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` })
       
     //verificamos el token si es valido o no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
+    await checkToken(token,req.session.user.id_user)
+    
    
 
    
@@ -54,8 +54,8 @@ const createClient = async(req, res = response) => {
       if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
       
       //verificamos si esta logueado y el token aun no ha expirado
-      const isToken = await checkToken(token)
-      if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+      await checkToken(token,req.session.user.id_user)
+      ;
       console.log('Intentaremos eliminar el cliente');
       const client = await Client.update( {status:2}, {where:{id_client:id}})
       if( !client ) return res.status(400).json({ msg: `Cliente con id ${id} no existe` });
@@ -82,8 +82,8 @@ const updateClient = async(req,res) => {
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
     
     //verificamos si esta logueado y el token aun no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+    await checkToken(token,req.session.user.id_user)
+    
     console.log('Intentaremos actualizar el cliente');
     const [rowCount] = await Client.update(req.body,{where:{id_client:id}})
     console.log(rowCount);
@@ -108,8 +108,8 @@ const getClientByID = async (req,res)=>{
       if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
       
       //verificamos si esta logueado y el token aun no ha expirado
-      const isToken = await checkToken(token)
-      if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+      await checkToken(token,req.session.user.id_user)
+      
       if( !id_client ) return res.status(400).json({ msg: `Se requiere el documento del usuario` });
       const client = await Client.findOne({where:{id_client}});
 

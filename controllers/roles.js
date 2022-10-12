@@ -13,8 +13,8 @@ const createRole = async (req,res) => {
   if(!token)return res.status(400).json({ msg: `El token es obligatorio` })
     
   //verificamos el token si es valido o no ha expirado
-  const isToken = await checkToken(token)
-  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
+  await checkToken(token,req.session.user.id_user)
+  
  
    
  
@@ -37,8 +37,8 @@ const getRolesByUserId = async(req,res) => {
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
     
     //verificamos el token si es valido o no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+    await checkToken(token,req.session.user.id_user)
+    ;
 
     const [results,metadata] = await sequelize.query(
         GET_ROL_BY_ID + id_user
@@ -57,8 +57,8 @@ const getRoles = async (req,res)=>{
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
     
     //verificamos el token si es valido o no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+    await checkToken(token,req.session.user.id_user)
+    
 
         const roles = await Role.findAll({where:{status:1}});
         console.log('Obtenemos los siguientes datos');
@@ -77,8 +77,8 @@ const addRoleToUser = async (req,res) => {
   if(!token)return res.status(400).json({ msg: `El token es obligatorio` })
     
   //verificamos el token si es valido o no ha expirado
-  const isToken = await checkToken(token)
-  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
+  await checkToken(token,req.session.user.id_user)
+  
  
    const user = await getUserByDocument(req.body.document)
    console.log('Obtenemos el usuario');
@@ -107,8 +107,8 @@ const updateUserRole = async ( req,res ) => {
   if(!token)return res.status(400).json({ msg: `El token es obligatorio` })
     
   //verificamos el token si es valido o no ha expirado
-  const isToken = await checkToken(token)
-  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
+  await checkToken(token,req.session.user.id_user)
+  
  
    const user = await getUserByDocument(req.body.document)
    console.log('Obtenemos el usuario');

@@ -12,13 +12,15 @@ const Auth = require('../models/auth');
 const login = async(req, res = response) => {
 
     const { email, password } = req.body;
+    console.log(req.session);
+    
 
     try {
       
         // Verificar si el email existe
         const user = await User.findOne({ where:{email} });
         console.log('Obtuvimos el usuario: ');
-        console.log(user);
+        console.log(user.dataValues);
         if ( !user ) {
             return res.status(400).json({
                 msg: 'Usuario / Password no son correctos - correo'
@@ -40,7 +42,8 @@ const login = async(req, res = response) => {
                 msg: 'Usuario / Password no son correctos - password'
             });
         }
-
+        req.session.user = user
+        console.log(req.session.user);
         // Generar el JWT
         const token = uuid()
         console.log(token);

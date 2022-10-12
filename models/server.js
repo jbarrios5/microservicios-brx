@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const session = require("express-session");
 
 
 class Server {
@@ -38,6 +39,11 @@ class Server {
 
         // Directorio Público
         this.app.use( express.static('public') );
+        this.app.use(session({
+            secret: "987f4bd6d4315c20b2ec70a46ae846d19d0ce563450c02c5b1bc71d5d580060b",
+            saveUninitialized: true,
+            resave: true,
+          }));
 
       
 

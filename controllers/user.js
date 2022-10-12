@@ -18,8 +18,8 @@ const createUser = async(req, res = response) => {
   if(!token)return res.status(400).json({ msg: `El token es obligatorio` })
     
   //verificamos el token si es valido o no ha expirado
-  const isToken = await checkToken(token)
-  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` })
+  await checkToken(token,req.session.user.id_user)
+  
  
    //verificamos si el usuario es adim 
  
@@ -37,16 +37,17 @@ const createUser = async(req, res = response) => {
 
 const getUser = async(req,res)=>{
     const {token} = req.headers
+
     try {
 
-    if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
-    
-    //verificamos el token si es valido o no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+      if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
+      
+      //verificamos el token si es valido o no ha expirado
+      await checkToken(token,req.session.user.id_user,res)
+      
       console.log('Ejecutaremos este query');
       console.log(GET_USER_WITH_ROL);
-    const [results,metadata] = await sequelize.query(
+      const [results,metadata] = await sequelize.query(
       GET_USER_WITH_ROL)
         results.map( us => delete us.password)
         console.log(results);
@@ -65,8 +66,8 @@ const getUserBlocked = async(req,res)=>{
   if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
   
   //verificamos el token si es valido o no ha expirado
-  const isToken = await checkToken(token)
-  if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+  await checkToken(token,req.session.user.id_user)
+  
 
       const user = await User.findAll({attributes: {exclude: ['password']},where:{status:0}});
       res.json(user);
@@ -83,8 +84,8 @@ const getUserByID = async (req,res)=>{
         if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
         
         //verificamos si esta logueado y el token aun no ha expirado
-        const isToken = await checkToken(token)
-        if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+        await checkToken(token,req.session.user.id_user)
+        
         if( !id_user ) return res.status(400).json({ msg: `Se requiere el id del usuario` });
         const user = await User.findOne({where:{id_user}});
 
@@ -111,8 +112,8 @@ const deleteUser = async(req,res)=>{
       if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
       
       //verificamos si esta logueado y el token aun no ha expirado
-      const isToken = await checkToken(token)
-      if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+      await checkToken(token,req.session.user.id_user)
+      
       console.log('Intentaremos eliminar el usuario');
       const user = await User.update({status:2},{where:{id_user:id}})
       if( !user ) return res.status(400).json({ msg: `Usuario con id ${id_user} no existe` });
@@ -140,8 +141,8 @@ const updateUser = async(req,res) => {
     if(!token)return res.status(400).json({ msg: `El token es obligatorio` });
     
     //verificamos si esta logueado y el token aun no ha expirado
-    const isToken = await checkToken(token)
-    if(!isToken)return res.status(400).json({ msg: `El token no existe o ha expirado` });
+    await checkToken(token,req.session.user.id_user)
+    
     console.log('Intentaremos actualizar el usuario');
     const [rowCount] = await User.update(req.body,{where:{id_user:id}})
     console.log(rowCount);
